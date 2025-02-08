@@ -8,8 +8,9 @@ import (
 
 type APIController struct {
 	BaseController
-	inboundController *InboundController
-	Tgbot             service.Tgbot
+	inboundController     *InboundController
+	xraySettingController *XraySettingController
+	Tgbot                 service.Tgbot
 }
 
 func NewAPIController(g *gin.RouterGroup) *APIController {
@@ -23,6 +24,7 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 	g.Use(a.checkLogin)
 
 	a.inboundController = NewInboundController(g)
+	a.xraySettingController = NewXraySettingController(g)
 
 	inboundRoutes := []struct {
 		Method  string
@@ -47,6 +49,7 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 		{"POST", "/resetAllClientTraffics/:id", a.inboundController.resetAllClientTraffics},
 		{"POST", "/delDepletedClients/:id", a.inboundController.delDepletedClients},
 		{"POST", "/onlines", a.inboundController.onlines},
+		{"POST", "/warp/:action", a.xraySettingController.warp},
 	}
 
 	for _, route := range inboundRoutes {
