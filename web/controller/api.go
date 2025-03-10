@@ -10,12 +10,15 @@ type APIController struct {
 	BaseController
 	inboundController     *InboundController
 	xraySettingController *XraySettingController
+	settingController     *SettingController
+	serverController      *ServerController
 	Tgbot                 service.Tgbot
 }
 
 func NewAPIController(g *gin.RouterGroup) *APIController {
 	a := &APIController{}
 	a.initRouter(g)
+	a.initRouterSetting(g)
 	return a
 }
 
@@ -50,6 +53,30 @@ func (a *APIController) initRouter(g *gin.RouterGroup) {
 		{"POST", "/delDepletedClients/:id", a.inboundController.delDepletedClients},
 		{"POST", "/onlines", a.inboundController.onlines},
 		{"POST", "/warp/:action", a.xraySettingController.warp},
+	}
+
+	for _, route := range inboundRoutes {
+		g.Handle(route.Method, route.Path, route.Handler)
+	}
+}
+
+func (a *APIController) initRouterSetting(g *gin.RouterGroup) {
+	g = g.Group("/panel/api/setting")
+	g.Use(a.checkLogin)
+
+	a.xraySettingController = NewXraySettingController(g)
+	a.settingController = NewSettingController(g)
+	a.serverController = NewServerController(g)
+
+	inboundRoutes := []struct {
+		Method  string
+		Path    string
+		Handler gin.HandlerFunc
+	}{
+		{"POST", "/warp/:action", a.xraySettingController.warp},
+		{"GET", "/all-setting", a.xraySettingController.getXraySetting},
+		{"POST", "/update-setting", a.xraySettingController.updateSetting},
+		{"POST", "/xray-restart", a.serverController.restartXrayService},
 	}
 
 	for _, route := range inboundRoutes {
