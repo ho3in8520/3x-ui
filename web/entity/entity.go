@@ -10,9 +10,9 @@ import (
 )
 
 type Msg struct {
-	Success bool        `json:"success"`
-	Msg     string      `json:"msg"`
-	Obj     interface{} `json:"obj"`
+	Success bool   `json:"success"`
+	Msg     string `json:"msg"`
+	Obj     any    `json:"obj"`
 }
 
 type AllSetting struct {
@@ -38,8 +38,10 @@ type AllSetting struct {
 	TgCpu                       int    `json:"tgCpu" form:"tgCpu"`
 	TgLang                      string `json:"tgLang" form:"tgLang"`
 	TimeLocation                string `json:"timeLocation" form:"timeLocation"`
-	SecretEnable                bool   `json:"secretEnable" form:"secretEnable"`
+	TwoFactorEnable				bool   `json:"twoFactorEnable" form:"twoFactorEnable"`
+	TwoFactorToken				string `json:"twoFactorToken" form:"twoFactorToken"`
 	SubEnable                   bool   `json:"subEnable" form:"subEnable"`
+	SubTitle                    string `json:"subTitle" form:"subTitle"`
 	SubListen                   string `json:"subListen" form:"subListen"`
 	SubPort                     int    `json:"subPort" form:"subPort"`
 	SubPath                     string `json:"subPath" form:"subPath"`
